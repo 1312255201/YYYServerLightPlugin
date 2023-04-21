@@ -20,9 +20,18 @@ namespace YYYServerLightPlugin
         [PluginEntryPoint("嘤嘤嘤服务器纯净服插件——NWAPI","0.0.1","嘤嘤嘤服务器的纯净服务器插件","咕咕鱼")]
         void OnEabled()
         {
-            EventManager.RegisterEvents(this);
-            EventManager.RegisterEvents<WaitingLobby>(this);
             Log.Info("插件开始加载了");
+            EventManager.RegisterEvents(this);
+            Log.Info("等待大厅加载");
+            EventManager.RegisterEvents<WaitingLobby>(this);
+            Log.Info("系统核弹加载");
+            EventManager.RegisterEvents<SystemNuke>(this);
+            Log.Info("基础血量设置");
+            EventManager.RegisterEvents<NormalHealth>(this);
+            Log.Info("MVP系统启动");
+            EventManager.RegisterEvents<MVPFuc>(this);
+            Log.Info("死亡复活信息显示插件");
+            EventManager.RegisterEvents<DeathInFormation>(this);
         }
         [PluginEvent(PluginAPI.Enums.ServerEventType.RoundStart)]
         void OnRoundStart()

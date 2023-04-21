@@ -12,6 +12,7 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <LangVersion>11</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,20 +32,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>C:\Users\AFish\Documents\GitHub\YYYLikeReload\packages\Input\Assembly-CSharp-firstpass.dll</HintPath>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\packages\Input\Assembly-CSharp-Publicized.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp-Publicized">
-      <HintPath>C:\Users\AFish\Documents\GitHub\YYYLikeReload\packages\Input\Assembly-CSharp-Publicized.dll</HintPath>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>..\packages\Input\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="CommandSystem.Core">
-      <HintPath>C:\Users\AFish\Documents\GitHub\YYYLikeReload\packages\Input\CommandSystem.Core.dll</HintPath>
+      <HintPath>..\packages\Input\CommandSystem.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Mirror-Publicized">
-      <HintPath>C:\Users\AFish\Documents\GitHub\YYYLikeReload\packages\Input\Mirror-Publicized.dll</HintPath>
+    <Reference Include="Mirror">
+      <HintPath>..\packages\Input\Mirror-Publicized.dll</HintPath>
     </Reference>
     <Reference Include="NorthwoodLib">
-      <HintPath>C:\Users\AFish\Documents\GitHub\YYYLikeReload\packages\Input\NorthwoodLib.dll</HintPath>
+      <HintPath>..\packages\Input\NorthwoodLib.dll</HintPath>
     </Reference>
     <Reference Include="PluginAPI, Version=12.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\Northwood.PluginAPI.12.0.0\lib\net48\PluginAPI.dll</HintPath>
@@ -58,13 +59,13 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>C:\Users\AFish\Documents\GitHub\YYYLikeReload\packages\Input\UnityEngine.dll</HintPath>
+      <HintPath>..\packages\Input\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>C:\Users\AFish\Documents\GitHub\YYYLikeReload\packages\Input\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\packages\Input\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
-      <HintPath>C:\Users\AFish\Documents\GitHub\YYYLikeReload\packages\Input\UnityEngine.PhysicsModule.dll</HintPath>
+      <HintPath>..\packages\Input\UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
     <Reference Include="YamlDotNet, Version=11.0.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
       <HintPath>..\packages\YamlDotNet.11.0.1\lib\net45\YamlDotNet.dll</HintPath>
@@ -73,6 +74,10 @@
   <ItemGroup>
     <Compile Include="API\MyAPI.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="Events\Fuction\DeathInFormation.cs" />
+    <Compile Include="Events\Fuction\MVPFuc.cs" />
+    <Compile Include="Events\Fuction\NormalHealth.cs" />
+    <Compile Include="Events\Fuction\SystemNuke.cs" />
     <Compile Include="Events\Fuction\WaitingLobby.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -81,7 +86,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="C:\Users\AFish\Downloads\PluginAPI.12.0.0 %282%29\PluginAPI.12.0.0\NwPluginAPI.Analyzers.dll" />
+    <Analyzer Include="..\packages\Input\NwPluginAPI.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

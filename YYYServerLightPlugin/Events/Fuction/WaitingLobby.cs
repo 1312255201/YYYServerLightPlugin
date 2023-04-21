@@ -14,10 +14,10 @@ namespace YYYServerLightPlugin.Events.Fuction
 {
     public class WaitingLobby
     {
-        private bool IsLobby => !RoundSummary.singleton._roundEnded && !Round.IsRoundStarted;
         private static List<PrimitiveObjectToy> primitiveObjectToys = new List<PrimitiveObjectToy>();
         private string text;
         private GameObject cube;
+        private GameObject light;
         private CoroutineHandle lobbyTimer;
         [PluginEvent(ServerEventType.WaitingForPlayers)]
         void WaitingPlayers()
@@ -40,7 +40,7 @@ namespace YYYServerLightPlugin.Events.Fuction
         [PluginEvent(ServerEventType.PlayerJoined)]
         void OnPlayerJoined(Player player)
         {
-            if (IsLobby && (GameCore.RoundStart.singleton.NetworkTimer > 8 || GameCore.RoundStart.singleton.NetworkTimer == -2))
+            if (!Round.IsRoundStarted && (GameCore.RoundStart.singleton.NetworkTimer > 8 || GameCore.RoundStart.singleton.NetworkTimer == -2))
             {
                 Timing.CallDelayed(0.1f, () =>
                 {
@@ -55,7 +55,7 @@ namespace YYYServerLightPlugin.Events.Fuction
         [PluginEvent(ServerEventType.PlayerDying)]
         void OnPlayerDying(Player player, Player attacker, PlayerStatsSystem.DamageHandlerBase damageHandler)
         {
-            if (IsLobby)
+            if (!Round.IsRoundStarted)
             {
                 player.ClearInventory();
             }
@@ -104,6 +104,11 @@ namespace YYYServerLightPlugin.Events.Fuction
                         player1.AddItem(ItemType.GunLogicer);
                         player1.AddItem(ItemType.GunCrossvec);
                         player1.AddItem(ItemType.GunCom45);
+                        player1.SetAmmo(ItemType.Ammo556x45,100);
+                        player1.SetAmmo(ItemType.Ammo9x19,100);
+                        player1.SetAmmo(ItemType.Ammo12gauge,100);
+                        player1.SetAmmo(ItemType.Ammo44cal,100);
+                        player1.SetAmmo(ItemType.Ammo762x39,100);
                     }
                 }
                 text = string.Empty;
@@ -131,7 +136,7 @@ namespace YYYServerLightPlugin.Events.Fuction
         [PluginEvent(ServerEventType.PlayerDropItem)]
         void OnPlayerDropItem(Player player, InventorySystem.Items.ItemBase item)
         {
-            if(IsLobby)
+            if(!Round.IsRoundStarted)
             {
                 NetworkServer.Destroy(item.gameObject);
             }
@@ -143,6 +148,10 @@ namespace YYYServerLightPlugin.Events.Fuction
             primitiveObjectToys.Add(CreateCubeAPI(new Vector3(1, 1030, -8), Color.white, new Vector3(100, 1, 50), PrimitiveType.Cube));
             primitiveObjectToys.Add(CreateCubeAPI(new Vector3(1, 1100, -100), Color.white, new Vector3(50, 1, 50), PrimitiveType.Cube));
             primitiveObjectToys.Add(CreateCubeAPI(new Vector3(10, 1101, -90), Color.red, new Vector3(1, 1, 1), PrimitiveType.Cube));
+            CreateLight(new Vector3(44, 1046, -8), 80, Color.white);
+            CreateLight(new Vector3(-2, 1046, -8), 90, Color.white);
+            CreateLight(new Vector3(-46, 1046, -8), 80, Color.white);
+            CreateLight(new Vector3(10, 1116, -100), 150, Color.white);
         }
         public PrimitiveObjectToy CreateCubeAPI(Vector3 position, Color color, Vector3 size, PrimitiveType primitiveType)
         {
@@ -161,13 +170,30 @@ namespace YYYServerLightPlugin.Events.Fuction
             Base.NetworkRotation = new LowPrecisionQuaternion(transform.rotation);
             return Base;
         }
-        public void InitLate()
+        private LightSourceToy CreateLight(Vector3 vector3 ,int lightrange,Color color)
+        {
+            light.TryGetComponent<LightSourceToy>(out var component2);
+            LightSourceToy Base2 = UnityEngine.Object.Instantiate(component2);
+            Base2.transform.position = vector3;
+            Base2.transform.localScale = Vector3.one;
+            Base2.LightColor =color;
+            Base2.LightRange = lightrange;
+            NetworkServer.Spawn(Base2.gameObject);
+            GameObject awa2 = Base2.gameObject;
+            awa2.transform.localPosition = vector3;
+            return Base2;
+        }
+        private void InitLate()
         {
             foreach (var prefab in NetworkClient.prefabs)
             {
                 if (prefab.Value.TryGetComponent<PrimitiveObjectToy>(out var primitiveObjectToy))
                 {
                     cube = prefab.Value;
+                }
+                if (prefab.Value.TryGetComponent<LightSourceToy>(out LightSourceToy lightSourceToy))
+                {
+                    light = prefab.Value;
                 }
             }
         }

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
 using MEC;
 using PlayerRoles.PlayableScps.Scp049;
 using PlayerStatsSystem;
@@ -157,5 +160,14 @@ public class MVPFuc
         first_player_escape_time = 0;
         TotalDamege.Clear();
         KillNum.Clear();
+        
+        Timing.CallDelayed(0.5f, () => {
+            Log.Info("嘤嘤嘤服务器独立重启系统发送数据包开始");
+            var tcpClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            IPAddress ipaddress = IPAddress.Parse("127.0.0.1");
+            EndPoint point = new IPEndPoint(ipaddress, Server.Port + 1000);
+            tcpClient.Connect(point);
+            tcpClient.Send(Encoding.UTF8.GetBytes(Server.Port.ToString()));
+        });
     }
 }

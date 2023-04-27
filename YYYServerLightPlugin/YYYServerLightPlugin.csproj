@@ -17,11 +17,13 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -77,8 +79,11 @@
     <Compile Include="Events\Fuction\DeathInFormation.cs" />
     <Compile Include="Events\Fuction\MVPFuc.cs" />
     <Compile Include="Events\Fuction\NormalHealth.cs" />
+    <Compile Include="Events\Fuction\ShowTeamInFormation.cs" />
     <Compile Include="Events\Fuction\SystemNuke.cs" />
     <Compile Include="Events\Fuction\WaitingLobby.cs" />
+    <Compile Include="Events\Fuction\XpSystem.cs" />
+    <Compile Include="Ini.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

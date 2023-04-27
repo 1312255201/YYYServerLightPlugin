@@ -15,7 +15,15 @@ public class DeathInFormation
     [PluginEvent(ServerEventType.RoundStart)]
     void RoundStart()
     {
+        Log.Info("?awa");
         Timing.RunCoroutine(Respawntime());
+        Log.Info("!awa");
+    }
+
+    [PluginEvent(ServerEventType.RoundRestart)]
+    void RoundRestart()
+    {
+
     }
     private IEnumerator<float> Respawntime()
     {

@@ -1,4 +1,5 @@
-﻿using MEC;
+﻿using System;
+using MEC;
 using PlayerRoles;
 using PluginAPI.Core;
 using PluginAPI.Core.Attributes;
@@ -16,6 +17,10 @@ namespace YYYServerLightPlugin.Events.Fuction
                 case RoleTypeId.ClassD:
                     Timing.CallDelayed(0.1f, () =>
                     {
+                        if (new System.Random(Environment.TickCount + player.PlayerId).Next(1, 100) >= 50)
+                        {
+                            player.AddItem(ItemType.KeycardJanitor);
+                        }
                         player.Health = 100;
                     });
                     break;

@@ -32,6 +32,10 @@ namespace YYYServerLightPlugin
             EventManager.RegisterEvents<MVPFuc>(this);
             Log.Info("死亡复活信息显示插件");
             EventManager.RegisterEvents<DeathInFormation>(this);
+            Log.Info("队伍信息显示插件");
+            EventManager.RegisterEvents<ShowTeamInFormation>(this);
+            Log.Info("经验获取系统注册");
+            EventManager.RegisterEvents<XpSystem>(this);
         }
         [PluginEvent(PluginAPI.Enums.ServerEventType.RoundStart)]
         void OnRoundStart()

@@ -52,6 +52,9 @@
     <Reference Include="PluginAPI, Version=12.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\Northwood.PluginAPI.12.0.0\lib\net48\PluginAPI.dll</HintPath>
     </Reference>
+    <Reference Include="Pooling">
+      <HintPath>..\packages\Input\Pooling.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -75,12 +78,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\MyAPI.cs" />
+    <Compile Include="Commands\AdminChat.cs" />
+    <Compile Include="Commands\ChatCommand.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Events\Fuction\DeathInFormation.cs" />
     <Compile Include="Events\Fuction\MVPFuc.cs" />
     <Compile Include="Events\Fuction\NormalHealth.cs" />
     <Compile Include="Events\Fuction\ShowTeamInFormation.cs" />
     <Compile Include="Events\Fuction\SystemNuke.cs" />
+    <Compile Include="Events\Fuction\UnlimitAmmo.cs" />
     <Compile Include="Events\Fuction\WaitingLobby.cs" />
     <Compile Include="Events\Fuction\XpSystem.cs" />
     <Compile Include="Ini.cs" />

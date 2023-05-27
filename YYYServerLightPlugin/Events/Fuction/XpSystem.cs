@@ -22,54 +22,54 @@ public class XpSystem
     {
         if (attacker != null)
         {
-                    bool itsadd = false;
-                    if(player.Team == Team.SCPs && player.Role != RoleTypeId.Scp0492)
-                    {
-                        if ((attacker != player))
+            bool itsadd = false;
+            if(player.Team == Team.SCPs && player.Role != RoleTypeId.Scp0492)
+            {
+                if ((attacker != player))
+                {
+                    itsadd = true;
+                    Timing.CallDelayed(0.3f, () => {
+                        if(player.Role == RoleTypeId.Spectator)
                         {
-                            itsadd = true;
-                            Timing.CallDelayed(0.3f, () => {
-                                if(player.Role == RoleTypeId.Spectator)
-                                {
-                                    IniFile.AddExp(attacker.ReferenceHub.characterClassManager.UserId, 50);
-                                }
-                            });
+                            IniFile.AddExp(attacker.ReferenceHub.characterClassManager.UserId, 50);
+                        }
+                    });
             
-                        }
-                    }
-                    if(attacker.Team == Team.SCPs)
+                }
+            }
+            if(attacker.Team == Team.SCPs)
+            {
+                foreach (var cat in Player.GetPlayers())
+                {
+                    if (cat.Role == RoleTypeId.Scp079)
                     {
-                        foreach (var cat in Player.GetPlayers())
+                        IniFile.AddExp(cat.ReferenceHub.characterClassManager.UserId, 5);
+                    }
+                }
+                if ((attacker != player) && itsadd == false)
+                {
+                    itsadd = true;
+                    Timing.CallDelayed(0.3f, () => {
+                        if(player.Role == RoleTypeId.Spectator)
                         {
-                            if (cat.Role == RoleTypeId.Scp079)
-                            {
-                                IniFile.AddExp(cat.ReferenceHub.characterClassManager.UserId, 5);
-                            }
+                            IniFile.AddExp(attacker.ReferenceHub.characterClassManager.UserId, 5);
                         }
-                        if ((attacker != player) && itsadd == false)
-                        {
-                            itsadd = true;
-                            Timing.CallDelayed(0.3f, () => {
-                                if(player.Role == RoleTypeId.Spectator)
-                                {
-                                    IniFile.AddExp(attacker.ReferenceHub.characterClassManager.UserId, 5);
-                                }
-                            });
+                    });
             
-                        }
-                    }
-                    if(attacker.IsHuman)
-                    {
-                        if(attacker != player && itsadd == false)
+                }
+            }
+            if(attacker.IsHuman)
+            {
+                if(attacker != player && itsadd == false)
+                {
+                    Timing.CallDelayed(0.3f, () => {
+                        if(player.Role == RoleTypeId.Spectator)
                         {
-                            Timing.CallDelayed(0.3f, () => {
-                                if(player.Role == RoleTypeId.Spectator)
-                                {
-                                    IniFile.AddExp(attacker.ReferenceHub.characterClassManager.UserId, 5);
-                                }
-                            });
+                            IniFile.AddExp(attacker.ReferenceHub.characterClassManager.UserId, 5);
                         }
-                    }
+                    });
+                }
+            }
         }
 
     }

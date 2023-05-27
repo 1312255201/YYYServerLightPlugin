@@ -9,25 +9,39 @@ using PluginAPI.Core.Attributes;
 using PluginAPI.Events;
 
 namespace YYYServerLightPlugin.Events.Fuction;
-
-    public class awa
-    {
-        private Player player = null;
-        private int playerid = 0;
-        private bool wait2 = false;
-        private List<string> strings = new List<string>();
-        public Player playerawa { get => player; set => player = value; }
-        public int playeridawa { get => playerid; set => playerid = value; }
-        public List<string> message { get => strings; set => strings = value; }
-        public bool wait { get => wait2; set => wait2 = value; }
-    }
-    public class ShowTeamInFormation
-    {
-        private List<CoroutineHandle> Coroutines = new();
-        private string ntfteaminfo;
-        private string chiteaminfo;
-        public List<awa> awas = new();
-        public Dictionary<RoleTypeId, string> keyValuePairs = new()
+public class awa
+{
+    private Player player = null;
+    private int playerid = 0;
+    private bool wait2 = false;
+    private List<string> strings = new List<string>();
+    public Player playerawa { get => player; set => player = value; }
+    public int playeridawa { get => playerid; set => playerid = value; }
+    public List<string> message { get => strings; set => strings = value; }
+    public bool wait { get => wait2; set => wait2 = value; }
+}
+public class ShowTeamInFormation
+{
+    private List<CoroutineHandle> Coroutines = new List<CoroutineHandle>();
+    private string ntfteaminfo;
+    private string chiteaminfo;
+    public static List<awa> awas = new List<awa>();
+    //DD
+    public static List<string> chatList = new List<string>();
+    //科学家
+    public static List<string> chatList2 = new List<string>();
+    //九尾狐
+    public static List<string> chatList3 = new List<string>();
+    //混沌
+    public static List<string> chatList4 = new List<string>();
+    //阴间
+    public static List<string> chatList5 = new List<string>();
+    //SCP
+    public static List<string> chatList6 = new List<string>();
+    //训练人员
+    public static List<string> chatList7 = new List<string>();
+    private static int chatid = 0;
+    public static Dictionary<RoleTypeId, string> keyValuePairs = new Dictionary<RoleTypeId, string>()
     {
         {RoleTypeId.NtfPrivate,"九尾狐 列兵" },
         {RoleTypeId.NtfCaptain,"九尾狐 指挥官" },
@@ -53,156 +67,347 @@ namespace YYYServerLightPlugin.Events.Fuction;
         {RoleTypeId.Spectator,"观察者" },
         {RoleTypeId.None,"空" }
     };
-        [PluginEvent(PluginAPI.Enums.ServerEventType.WaitingForPlayers)]
-        void OnWaitingForPlayer()
+    [PluginEvent(PluginAPI.Enums.ServerEventType.WaitingForPlayers)]
+    void OnWaitingForPlayer()
+    {
+        Coroutines.Add(Timing.RunCoroutine(HintRun()));
+    }
+    public void GetSCPHP()
+    {
+        int ntfnum = Player.GetPlayers().Count(x => x.Team == Team.FoundationForces || x.Role == RoleTypeId.FacilityGuard);
+        int chinum = Player.GetPlayers().Count(x => x.Team == Team.ChaosInsurgency);
+        try
         {
-            Coroutines.Add(Timing.RunCoroutine(HintRun()));
+            foreach (var player in Player.GetPlayers())
+            {
+
+                if (player.Team == Team.FoundationForces || player.Role == RoleTypeId.FacilityGuard)
+                {
+                    ntfteaminfo = ntfteaminfo + "\n[" + keyValuePairs[player.Role] + "]" + player.Nickname + " HP:" + player.Health;
+                }
+                if (player.Team == Team.ChaosInsurgency)
+                {
+                    chiteaminfo = chiteaminfo + "\n[" + keyValuePairs[player.Role] + "]" + player.Nickname + " HP:" + player.Health;
+                }
+            }
         }
-        private void GetSCPHP()
+        catch
         {
-            int ntfnum = Player.GetPlayers().Count(x => x.Team == Team.FoundationForces || x.Role == RoleTypeId.FacilityGuard);
-            int chinum = Player.GetPlayers().Count(x => x.Team == Team.ChaosInsurgency);
-            try
+        }
+        try
+        {
+            if (ntfnum > 5)
             {
-                foreach (var player in Player.GetPlayers())
-                {
-
-                    if (player.Team == Team.FoundationForces || player.Role == RoleTypeId.FacilityGuard)
-                    {
-                        ntfteaminfo = ntfteaminfo + "\n[" + keyValuePairs[player.Role] + "]" + player.Nickname + " HP:" + player.Health;
-                    }
-                    if (player.Team == Team.ChaosInsurgency)
-                    {
-                        chiteaminfo = chiteaminfo + "\n[" + keyValuePairs[player.Role] + "]" + player.Nickname + " HP:" + player.Health;
-                    }
-                }
+                ntfteaminfo = "九尾狐当前人数:" + ntfnum;
             }
-            catch (Exception e)
+            if (chinum > 5)
             {
-                Log.Debug(e.ToString());
+                chiteaminfo = "混沌当前人数:" + chinum;
             }
-            try
+        }
+        catch
+        {
+        }
+        try
+        {
+            foreach (var player1 in Player.GetPlayers())
             {
-                if (ntfnum > 5)
+                if (player1.Team == Team.ChaosInsurgency)
                 {
-                    ntfteaminfo = "九尾狐当前人数:" + ntfnum;
-                }
-                if (chinum > 5)
-                {
-                    chiteaminfo = "混沌当前人数:" + chinum;
-                }
-            }
-            catch
-            {
-                Log.Debug("报错位置1");
-                foreach (Player player in Player.GetPlayers())
-                {
-                    player.SendConsoleMessage("报错位置1", "yellow");
-                }
-            }
-            try
-            {
-                foreach (var player1 in Player.GetPlayers())
-                {
-                    if (player1.Team == Team.ChaosInsurgency)
-                    {
-                        foreach (var awa2 in awas)
-                        {
-                            if (player1.PlayerId == awa2.playeridawa)
-                            {
-                                string temp = "";
-
-                                foreach (var message in awa2.message)
-                                {
-                                    if (message.Contains("CHI血量信息"))
-                                    {
-                                        temp = message;
-                                    }
-                                }
-                                awa2.message.Remove(temp);
-                                StringBuilder str = new StringBuilder();
-                                str.Append("\n<size=0><color=#00BFFF>[CHI血量信息]</color></size><align=right><size=23>");
-                                str.Append(chiteaminfo);
-                                str.Append("</size>");
-                                awa2.message.Add(str.ToString());
-                                str.Clear();
-                            }
-                        }
-                        continue;
-                    }
-                    foreach (awa awa2 in awas)
+                    foreach (var awa2 in awas)
                     {
                         if (player1.PlayerId == awa2.playeridawa)
                         {
                             string temp = "";
 
-                            foreach (string message in awa2.message)
+                            foreach (var message in awa2.message)
                             {
                                 if (message.Contains("CHI血量信息"))
                                 {
                                     temp = message;
                                 }
                             }
-                            if (temp != "")
-                            {
-                                awa2.message.Remove(temp);
-                            }
+                            awa2.message.Remove(temp);
+                            StringBuilder str = new StringBuilder();
+                            str.Append("\n<size=0><color=#00BFFF>[CHI血量信息]</color></size><align=right><size=23>");
+                            str.Append(chiteaminfo);
+                            str.Append("</size>");
+                            awa2.message.Add(str.ToString());
+                            str.Clear();
                         }
-
                     }
+                    continue;
                 }
-
-            }
-            catch
-            {
-                Log.Debug("报错位置3");
-                foreach (Player player in Player.GetPlayers())
+                foreach (awa awa2 in awas)
                 {
-                    player.SendConsoleMessage("报错位置3", "yellow");
-                }
-            }
-            try
-            {
-                foreach (var player1 in Player.GetPlayers())
-                {
-                    if (player1.Team == Team.FoundationForces || player1.Role == RoleTypeId.FacilityGuard)
+                    if (player1.PlayerId == awa2.playeridawa)
                     {
-                        foreach (var awa2 in awas)
-                        {
-                            if (player1.PlayerId == awa2.playeridawa)
-                            {
-                                string temp = "";
+                        string temp = "";
 
-                                foreach (var message in awa2.message)
-                                {
-                                    if (message.Contains("NTF血量信息"))
-                                    {
-                                        temp = message;
-                                    }
-                                }
-                                awa2.message.Remove(temp);
-                                if(player1.Items.Any(x=> x.ItemTypeId == ItemType.Radio))
-                                {
-                                    StringBuilder str = new StringBuilder();
-                                    str.Append("\n<size=0><color=#00BFFF>[NTF血量信息]</color></size><align=right><size=23>");
-                                    str.Append(ntfteaminfo);
-                                    str.Append("</size>");
-                                    awa2.message.Add(str.ToString());
-                                    str.Clear();
-                                }
+                        foreach (string message in awa2.message)
+                        {
+                            if (message.Contains("CHI血量信息"))
+                            {
+                                temp = message;
                             }
                         }
-                        continue;
+                        if (temp != "")
+                        {
+                            awa2.message.Remove(temp);
+                        }
                     }
-                    foreach (awa awa2 in awas)
+
+                }
+            }
+
+        }
+        catch
+        {
+
+        }
+        try
+        {
+            foreach (var player1 in Player.GetPlayers())
+            {
+                if (player1.Team == Team.FoundationForces || player1.Role == RoleTypeId.FacilityGuard)
+                {
+                    foreach (var awa2 in awas)
                     {
                         if (player1.PlayerId == awa2.playeridawa)
                         {
                             string temp = "";
 
-                            foreach (string message in awa2.message)
+                            foreach (var message in awa2.message)
                             {
                                 if (message.Contains("NTF血量信息"))
+                                {
+                                    temp = message;
+                                }
+                            }
+                            awa2.message.Remove(temp);
+                            if(player1.Items.Any(x=> x.ItemTypeId == ItemType.Radio))
+                            {
+                                StringBuilder str = new StringBuilder();
+                                str.Append("\n<size=0><color=#00BFFF>[NTF血量信息]</color></size><align=right><size=23>");
+                                str.Append(ntfteaminfo);
+                                str.Append("</size>");
+                                awa2.message.Add(str.ToString());
+                                str.Clear();
+                            }
+                        }
+                    }
+                    continue;
+                }
+                foreach (awa awa2 in awas)
+                {
+                    if (player1.PlayerId == awa2.playeridawa)
+                    {
+                        string temp = "";
+
+                        foreach (string message in awa2.message)
+                        {
+                            if (message.Contains("NTF血量信息"))
+                            {
+                                temp = message;
+                            }
+                        }
+                        if (temp != "")
+                        {
+                            awa2.message.Remove(temp);
+                        }
+                    }
+
+                }
+            }
+
+        }
+        catch
+        {
+        }
+        ntfteaminfo = "";
+        chiteaminfo = "";
+    }
+    public static IEnumerator<float> chatTiming(Player player,string txt)
+    {
+        yield return Timing.WaitForSeconds(1f);
+        chatid++;
+        txt.Replace("<", "＜");
+        txt.Replace(">", "＞");
+        txt.Replace("\n", "");
+        txt.Replace("\r", "");
+        if (txt.Length <= 30)
+        {
+            List<string> list = new List<string>();
+            if (player.Role == RoleTypeId.ClassD)
+            {
+                if (chatList.Count <= 5)
+                {
+                    chatList.Add("<pos=35%>[" + keyValuePairs[player.Role] + "]" + player.Nickname + ":" + txt);
+                }
+                else
+                {
+                    chatList.RemoveAt(0);
+                    chatList.Add("<pos=35%>[" + keyValuePairs[player.Role] + "]" + player.Nickname + ":" + txt);
+                }
+                for (int i = 0; i < chatList.Count; i++)
+                {
+                    list.Add(chatList[i]);
+                }
+            }
+            if (player.Role == RoleTypeId.Scientist)
+            {
+                if (chatList2.Count <= 5)
+                {
+                    chatList2.Add("<pos=35%>[" + keyValuePairs[player.Role] + "]" + player.Nickname + ":" + txt);
+                }
+                else
+                {
+                    chatList2.RemoveAt(0);
+                    chatList2.Add("<pos=35%>[" + keyValuePairs[player.Role] + "]" + player.Nickname + ":" + txt);
+                }
+                for (int i = 0; i < chatList2.Count; i++)
+                {
+                    list.Add(chatList2[i]);
+                }
+            }
+            if (player.Team == Team.FoundationForces || player.Role == RoleTypeId.FacilityGuard)
+            {
+                if (chatList3.Count <= 5)
+                {
+                    chatList3.Add("<pos=35%>[" + keyValuePairs[player.Role] + "]" + player.Nickname + ":" + txt);
+                }
+                else
+                {
+                    chatList3.RemoveAt(0);
+                    chatList3.Add("<pos=35%>[" + keyValuePairs[player.Role] + "]" + player.Nickname + ":" + txt);
+                }
+                for (int i = 0; i < chatList3.Count; i++)
+                {
+                    list.Add(chatList3[i]);
+                }
+            }
+            if (player.Team == Team.ChaosInsurgency)
+            {
+                if (chatList4.Count <= 5)
+                {
+                    chatList4.Add("<pos=35%>[" + keyValuePairs[player.Role] + "]" + player.Nickname + ":" + txt);
+                }
+                else
+                    {
+                        chatList4.RemoveAt(0);
+                        chatList4.Add("<pos=35%>[" + keyValuePairs[player.Role] + "]" + player.Nickname + ":" + txt);
+                    }
+                for (int i = 0; i < chatList4.Count; i++)
+                {
+                    list.Add(chatList4[i]);
+                }
+            }
+            if (player.Role == RoleTypeId.Tutorial)
+            {
+                if (chatList7.Count <= 5)
+                {
+                    chatList7.Add("<pos=35%>[" + keyValuePairs[player.Role] + "]" + player.Nickname + ":" + txt);
+                }
+                else
+                {
+                    chatList7.RemoveAt(0);
+                    chatList7.Add("<pos=35%>[" + keyValuePairs[player.Role] + "]" + player.Nickname + ":" + txt);
+                }
+                for (int i = 0; i < chatList7.Count; i++)
+                {
+                    list.Add(chatList7[i]);
+                }
+            }
+            if (player.Role == RoleTypeId.Spectator || player.Role == RoleTypeId.None)
+            {
+                if (chatList5.Count <= 5)
+                {
+                    chatList5.Add("<pos=35%>[" + keyValuePairs[player.Role] + "]" + player.Nickname + ":" + txt);
+                }
+                else
+                {
+                    chatList5.RemoveAt(0);
+                    chatList5.Add("<pos=35%>[" + keyValuePairs[player.Role] + "]" + player.Nickname + ":" + txt);
+                }
+                for (int i = 0; i < chatList5.Count; i++)
+                {
+                    list.Add(chatList5[i]);
+                }
+            }
+            if (player.Team == Team.SCPs)
+            {
+                if (chatList6.Count <= 5)
+                {
+                    chatList6.Add("<pos=35%>[" + keyValuePairs[player.Role] + "]" + player.Nickname + ":" + txt);
+                }
+                else
+                    {
+                        chatList6.RemoveAt(0);
+                        chatList6.Add("<pos=35%>[" + keyValuePairs[player.Role] + "]" + player.Nickname + ":" + txt);
+                    }
+                    for (int i = 0; i < chatList6.Count; i++)
+                    {
+                        list.Add(chatList6[i]);
+                    }
+                    try
+                    {
+                        string txtscptmp = ""; 
+                        for (int i = chatList6.Count - 3; i < chatList6.Count; i++)
+                        {
+                            if (i >= 0)
+                            {
+                                var awaawa = "";
+                                awaawa = chatList6[i];
+                                txtscptmp += "<size=16>"+awaawa.Replace("<pos=35%>","") + "</size>\n";
+                            }
+                        }
+                        foreach (var variaPlayer in Player.GetPlayers())
+                        {
+                            if (variaPlayer.Team == Team.SCPs)
+                            {
+                                variaPlayer.ClearBroadcasts();
+                                variaPlayer.SendBroadcast(txtscptmp,10);
+                            }
+                        }
+                    }
+                    catch 
+                    {
+                        Log.Info("awa");
+                    }
+            }
+            AddChatHint(player,"<size=23><align=right>" + "<pos=35%>队伍聊天 指令.c [内容]\n" + string.Join("\n", list) + "</size>" , chatid);
+            list.Clear();
+        }
+    }
+    public static void AddChatHint(Player player,string thing,int id)
+    {
+        foreach (awa awa2 in awas)
+        {
+            var player1 = Player.GetPlayers().FirstOrDefault(b => b.PlayerId == awa2.playeridawa);
+            if(player1 != null)
+            {
+                if((player1.Team == player.Team) || ((player.Team == Team.FoundationForces || player.Role == RoleTypeId.FacilityGuard) && (player1.Role == RoleTypeId.FacilityGuard || player1.Team == Team.FoundationForces)) )
+                {
+                    string temp = "";
+                    foreach (string message in awa2.message)
+                    {
+                        if (message.Contains("聊天的Timing"))
+                        {
+                            temp = message;
+                        }
+                    }
+                    if (temp != "")
+                    {
+                        awa2.message.Remove(temp);
+                    }
+                    awa2.message.Add("<size=0>聊天的Timing"+id+"</size>\n" + thing);
+                    Timing.CallDelayed(10f, () => {
+                        foreach (awa awa2 in awas)
+                        {
+                            string temp = "";
+                            foreach (string message in awa2.message)
+                            {
+                                if (message.Contains("聊天的Timing"+id))
                                 {
                                     temp = message;
                                 }
@@ -212,116 +417,153 @@ namespace YYYServerLightPlugin.Events.Fuction;
                                 awa2.message.Remove(temp);
                             }
                         }
-
-                    }
-                }
-
-            }
-            catch
-            {
-                Log.Debug("报错位置4");
-                foreach (Player player in Player.GetPlayers())
-                {
-                    player.SendConsoleMessage("报错位置4", "yellow");
+                    });
                 }
             }
-            ntfteaminfo = "";
-            chiteaminfo = "";
+
         }
-        private IEnumerator<float> HintRun()
+
+
+    }
+    private IEnumerator<float> HintRun()
+    {
+        yield return Timing.WaitForSeconds(5f);
+        int awa = 0;
+        while (true)
         {
-            yield return Timing.WaitForSeconds(5f);
-            int awa = 0;
-            while (true)
+            yield return Timing.WaitForSeconds(1f);
+            awa++;
+            if (awa >= 3)
             {
-                yield return Timing.WaitForSeconds(1f);
-                awa++;
-                if (awa >= 5)
+                awa = 0;
+                try
                 {
-                    awa = 0;
                     GetSCPHP();
                 }
-                for (int i = 0; i < awas.Count(); i++)
+                catch
                 {
-                    try
+                    Log.Info("Debug2");
+                }
+            }
+            for (int i = 0; i < awas.Count(); i++)
+            {
+                try
+                {
+                    bool chatawa = false;
+                    if (awas[i].message.Count >= 1 && awas[i].wait == false)
                     {
-                        if (awas[i].message.Count >= 1 && awas[i].wait == false)
+                        StringBuilder str = new StringBuilder();
+                        str.Append("<size=0>我是一般</size>");
+                        foreach (var mm in awas[i].message)
                         {
-                            StringBuilder str = new StringBuilder();
-                            str.Append("<size=0>我是一般</size>");
-                            foreach (var mm in awas[i].message)
+                            if (mm.Contains("聊天的Timing"))
                             {
-                                if (mm.Contains("SCP血量信息") || mm.Contains("NTF血量信息") || mm.Contains("CHI血量信息"))
-                                {
-                                    str.Insert(0, "\n\n\n\n\n\n\n\n");
-                                    str.Insert(0, "<pos=60%>"+mm+"</pos>");
-                                }
-                                if (mm.Contains("聊天的Timing"))
-                                {
-                                    str.Insert(0, mm);
-                                }
-                                if (mm.Contains("玩家角色介绍"))
-                                {
-                                    str.Append(mm);
-                                }
-                                if (mm.Contains("临时消息"))
-                                {
-                                    str.Append(mm);
-                                }
+                                str.Insert(0,mm);
+                                chatawa = true;
                             }
-                            for(int j = 0; j < 23; j++)
+                        }
+                        if (chatawa)
+                        {
+                            for (int j = 0; j < 5; j++)
+                            {
+                                str.Insert(0,"\n");
+                            }
+                        }
+                        foreach (var mm in awas[i].message)
+                        {
+                            if (mm.Contains("SCP血量信息") || mm.Contains("NTF血量信息") || mm.Contains("CHI血量信息"))
+                            {
+                                str.Insert(0, "\n\n\n\n\n\n\n\n");
+                                str.Insert(0, "<pos=60%>"+mm+"</pos>");
+                            }
+                            if (mm.Contains("玩家角色介绍"))
+                            {
+                                str.Append(mm);
+                            }
+                            if (mm.Contains("临时消息"))
+                            {
+                                str.Append(mm);
+                            }
+                        }
+                        if(chatawa)
+                        {
+                            for (int j = 0; j < 15; j++)
                             {
                                 str.Append("\n");
                             }
-                            if(Player.Get(awas[i].playeridawa) != null)
-                            {
-                                Player.Get(awas[i].playeridawa).ReceiveHint(str.ToString(), 2);
-                            }
-                            str.Clear();
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Info(ex.Message);
-                        Log.Info(ex.GetBaseException().ToString());
+                        else
+                        {
+                            for (int j = 0; j < 23; j++)
+                            {
+                                str.Append("\n");
+                            }
+                        }
+
+                        try
+                        {
+                            var ttttt = Player.GetPlayers().FirstOrDefault(x => x.PlayerId == awas[i].playeridawa);
+                            if (ttttt != null)
+                            {
+                                ttttt.ReceiveHint(str.ToString(), 2);
+                            }
+                        }
+                        catch 
+                        {
+                            Log.Info("debug");
+                                
+                        }
+                        str.Clear();
                     }
                 }
-            }
-        }
-        [PluginEvent(PluginAPI.Enums.ServerEventType.PlayerJoined)]
-        void PlayerJoined(Player player)
-        {
-            awa tempawa = new awa();
-            tempawa.playerawa = player;
-            tempawa.playeridawa = player.PlayerId;
-            awas.Add(tempawa);
-        }
-        [PluginEvent(PluginAPI.Enums.ServerEventType.RoundEnd)]
-        void RoundEnd(RoundSummary.LeadingTeam leadingTeam)
-        {
-            foreach (awa awa2 in awas)
-            {
-                awa2.playerawa = null;
-                awa2.playeridawa = 0;
-                awa2.message.Clear();
-            }
-            awas.Clear();
-            foreach (CoroutineHandle coroutineHandle in Coroutines)
-            {
-                Timing.KillCoroutines(coroutineHandle);
-            }
-            Coroutines.Clear();
-        }
-        [PluginEvent(PluginAPI.Enums.ServerEventType.PlayerLeft)]
-        void PlayerLeft(Player player)
-        {
-            for (int i = awas.Count - 1; i >= 0; i--)
-            {
-                if (awas[i].playeridawa == player.PlayerId)
+                catch
                 {
-                    awas.Remove(awas[i]);
-                    Log.Info("玩家退出删除他的Hint" + player.PlayerId);
+
                 }
             }
         }
     }
+    [PluginEvent(PluginAPI.Enums.ServerEventType.PlayerJoined)]
+    void PlayerJoined(Player player)
+    {
+        awa tempawa = new awa();
+        tempawa.playerawa = player;
+        tempawa.playeridawa = player.PlayerId;
+        awas.Add(tempawa);
+    }
+    [PluginEvent(PluginAPI.Enums.ServerEventType.RoundEnd)]
+    void RoundEnd(RoundSummary.LeadingTeam leadingTeam)
+    {
+        chatList.Clear();
+        chatList2.Clear();
+        chatList3.Clear();
+        chatList4.Clear();
+        chatList5.Clear();
+        chatList6.Clear();
+        chatList7.Clear();
+        foreach (awa awa2 in awas)
+        {
+            awa2.playerawa = null;
+            awa2.playeridawa = 0;
+            awa2.message.Clear();
+        }
+        awas.Clear();
+        foreach (CoroutineHandle coroutineHandle in Coroutines)
+        {
+            Timing.KillCoroutines(coroutineHandle);
+        }
+        Coroutines.Clear();
+    }
+    [PluginEvent(PluginAPI.Enums.ServerEventType.PlayerLeft)]
+    void PlayerLeft(Player player)
+    {
+        for (int i = awas.Count - 1; i >= 0; i--)
+        {
+            if (awas[i].playeridawa == player.PlayerId)
+            {
+                awas.Remove(awas[i]);
+                Log.Info("玩家退出删除他的Hint" + player.PlayerId);
+            }
+        }
+    }
+}

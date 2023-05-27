@@ -27,11 +27,9 @@ public class DeathInFormation
     }
     private IEnumerator<float> Respawntime()
     {
-        Log.Info("=w=");
         yield return Timing.WaitForSeconds(1f);
         while (Round.IsRoundStarted)
         {
-            Log.Info("qwq");
             yield return Timing.WaitForSeconds(1f);
             try
             {

@@ -9,6 +9,7 @@ using PlayerRoles.PlayableScps.Scp049;
 using PlayerStatsSystem;
 using PluginAPI.Core;
 using PluginAPI.Core.Attributes;
+using Utils.NonAllocLINQ;
 
 namespace YYYServerLightPlugin.Events.Fuction;
 
@@ -43,7 +44,7 @@ public class MVPFuc
         var sortedTotalDamege = TotalDamege.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
         foreach (var x in sortedKillNum)
         {
-            var tmpplr = Player.Get(x.Key);
+            var tmpplr = Player.GetPlayers().FirstOrDefault(awa => awa.PlayerId == x.Key);
             if (tmpplr != null)
             {
                 txt += "\nACE! <color=#7FFFAA>" + tmpplr.Nickname + "</color> 杀了 <color=#FF0000>" + x.Value.ToString() + "</color> 个人";
@@ -52,7 +53,7 @@ public class MVPFuc
         }
         foreach (var x in sortedTotalDamege)
         {
-            var tmpplr = Player.Get(x.Key);
+            var tmpplr = Player.GetPlayers().FirstOrDefault(awa => awa.PlayerId == x.Key);
             if (tmpplr != null)
             {
                 txt += "\n<color=#7FFFAA>" + tmpplr.Nickname + "</color> 造成了最多的伤害 造成了 <color=#FF0000>" + x.Value.ToString() + "</color> 滴血的伤害";

@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using PluginAPI.Core;
+using Utils.NonAllocLINQ;
 
 namespace YYYServerLightPlugin;
 
@@ -132,26 +134,28 @@ public class IniFile
     {
         Dictionary<string, string> param = new Dictionary<string, string>();
         param.Add("userid", p);
-        param.Add("nickname", Player.Get(p).Nickname);
+        param.Add("nickname", Player.GetPlayers().FirstOrDefault(x=> x.UserId == p)?.Nickname);
         param.Add("exp", exp.ToString());
         new Task(() =>
         {
             Get(_url + "addExp", param);
         }).Start();
-        Player.Get(p).SendBroadcast("恭喜你获得了" + exp.ToString() + "点经验",5 );
+        var pp = Player.GetPlayers().FirstOrDefault(x => x.UserId == p);
+        pp?.SendBroadcast("恭喜你获得了" + exp.ToString() + "点经验",5 );
     }
 
     public static void AddExp(string p, int exp)
     {
+        var ppp = Player.GetPlayers().FirstOrDefault(pp => pp.UserId == p);
         Dictionary<string, string> param = new Dictionary<string, string>();
         param.Add("userid", p);
-        param.Add("nickname", Player.Get(p).Nickname);
+        param.Add("nickname", ppp.Nickname);
         param.Add("exp", exp.ToString());
         new Task(() =>
         {
             Get(_url + "addExp", param);
         }).Start();
-        Player.Get(p).SendBroadcast( "恭喜你获得了" + exp.ToString() + "点经验",5);
+       ppp.SendBroadcast( "恭喜你获得了" + exp.ToString() + "点经验",5);
     }
     public static string Get(string url, Dictionary<string, string> dic = null)
     {

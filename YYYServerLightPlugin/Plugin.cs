@@ -36,6 +36,8 @@ namespace YYYServerLightPlugin
             EventManager.RegisterEvents<ShowTeamInFormation>(this);
             Log.Info("经验获取系统注册");
             EventManager.RegisterEvents<XpSystem>(this);
+            Log.Info("无限子弹注册");
+            EventManager.RegisterEvents<UnlimitAmmo>(this);
         }
         [PluginEvent(PluginAPI.Enums.ServerEventType.RoundStart)]
         void OnRoundStart()
@@ -94,7 +96,7 @@ namespace YYYServerLightPlugin
                             NetworkServer.Destroy(itemPickupBase.gameObject);
                             itemnum++;
                         }
-                        Server.SendBroadcast("本次一共清理了" + itemnum + "件物品" + ragdollnum + "个布娃娃",10);
+                        Server.SendBroadcast("本次一共清理了" + itemnum + "件物品" + ragdollnum + "个尸体",10);
                         break;
 
                 }

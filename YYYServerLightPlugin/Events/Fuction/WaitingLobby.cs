@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using AdminToys;
 using Footprinting;
+using MapGeneration;
 using MEC;
 using Mirror;
 using PlayerRoles;
@@ -15,6 +16,7 @@ namespace YYYServerLightPlugin.Events.Fuction
     public class WaitingLobby
     {
         private static List<PrimitiveObjectToy> primitiveObjectToys = new List<PrimitiveObjectToy>();
+        public static List<LightSourceToy> Ex_light = new List<LightSourceToy>();
         private string text;
         private GameObject cube;
         private GameObject light;
@@ -60,6 +62,23 @@ namespace YYYServerLightPlugin.Events.Fuction
                 player.ClearInventory();
             }
         }
+
+        [PluginEvent(ServerEventType.WarheadStart)]
+        void WarheadStart(bool isAutomatic, Player player, bool isResumed)
+        {
+            foreach (var vaLightSourceToy in Ex_light)
+            {
+                vaLightSourceToy.LightColor = Color.red;
+            }
+        }
+        [PluginEvent(ServerEventType.WarheadStop)]
+        void WarheadStop(Player player)
+        {
+            foreach (var vaLightSourceToy in Ex_light)
+            {
+                vaLightSourceToy.LightColor = Color.white;
+            }
+        }
         [PluginEvent(ServerEventType.RoundStart)]
         void RoundStart()
         {
@@ -79,6 +98,13 @@ namespace YYYServerLightPlugin.Events.Fuction
             foreach (var player in Player.GetPlayers())
             {
                 player.IsGodModeEnabled = false;
+            }
+            foreach (var variRoom in Map.Rooms)
+            {
+                if (variRoom.Zone != FacilityZone.Surface)
+                {
+                    Ex_light.Add(CreateLight(variRoom.transform.position + Vector3.up * 4,10,Color.white));
+                }
             }
         }
         private IEnumerator<float> LobbyTimer()
@@ -148,10 +174,10 @@ namespace YYYServerLightPlugin.Events.Fuction
             primitiveObjectToys.Add(CreateCubeAPI(new Vector3(1, 1030, -8), Color.white, new Vector3(100, 1, 50), PrimitiveType.Cube));
             primitiveObjectToys.Add(CreateCubeAPI(new Vector3(1, 1100, -100), Color.white, new Vector3(50, 1, 50), PrimitiveType.Cube));
             primitiveObjectToys.Add(CreateCubeAPI(new Vector3(10, 1101, -90), Color.red, new Vector3(1, 1, 1), PrimitiveType.Cube));
-            CreateLight(new Vector3(44, 1046, -8), 80, Color.white);
-            CreateLight(new Vector3(-2, 1046, -8), 90, Color.white);
-            CreateLight(new Vector3(-46, 1046, -8), 80, Color.white);
-            CreateLight(new Vector3(10, 1116, -100), 150, Color.white);
+            CreateLight(new Vector3(44, 1035, -8), 80, Color.white);
+            CreateLight(new Vector3(-2, 1035, -8), 90, Color.white);
+            CreateLight(new Vector3(-46, 1035, -8), 80, Color.white);
+            CreateLight(new Vector3(10, 1105, -100), 150, Color.white);
         }
         public PrimitiveObjectToy CreateCubeAPI(Vector3 position, Color color, Vector3 size, PrimitiveType primitiveType)
         {
@@ -178,6 +204,7 @@ namespace YYYServerLightPlugin.Events.Fuction
             Base2.transform.localScale = Vector3.one;
             Base2.LightColor =color;
             Base2.LightRange = lightrange;
+            Base2.LightIntensity = lightrange;
             NetworkServer.Spawn(Base2.gameObject);
             GameObject awa2 = Base2.gameObject;
             awa2.transform.localPosition = vector3;
@@ -190,10 +217,12 @@ namespace YYYServerLightPlugin.Events.Fuction
                 if (prefab.Value.TryGetComponent<PrimitiveObjectToy>(out var primitiveObjectToy))
                 {
                     cube = prefab.Value;
+                    Log.Info("找到方块了");
                 }
                 if (prefab.Value.TryGetComponent<LightSourceToy>(out LightSourceToy lightSourceToy))
                 {
                     light = prefab.Value;
+                    Log.Info("找到光源了");
                 }
             }
         }

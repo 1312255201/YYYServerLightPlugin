@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InventorySystem.Items.Firearms;
+using InventorySystem.Items.Firearms.BasicMessages;
 using PluginAPI.Core;
 
 namespace YYYServerLightPlugin.API
@@ -14,6 +16,26 @@ namespace YYYServerLightPlugin.API
         //就不自己打了
         public static bool IsKeycard(this ItemType type) => type == ItemType.KeycardJanitor || type == ItemType.KeycardScientist || type == ItemType.KeycardResearchCoordinator || type == ItemType.KeycardZoneManager || type == ItemType.KeycardGuard || type == ItemType.KeycardNTFOfficer || type == ItemType.KeycardContainmentEngineer || type == ItemType.KeycardNTFLieutenant || type == ItemType.KeycardNTFCommander || type == ItemType.KeycardFacilityManager || type == ItemType.KeycardChaosInsurgency || type == ItemType.KeycardO5;
 
+        public static void ReloadWeapen(this Player player)
+        {
+            if (player.CurrentItem == null)
+            {
+                //手上没有物品
+                return;
+            }
+            else
+            {
+                if (player.CurrentItem is Firearm firearm)
+                {
+                    firearm.AmmoManagerModule.ServerTryReload();
+                    player.Connection.Send<RequestMessage>(new RequestMessage(firearm.ItemSerial,RequestType.Reload));
+                }
+                else
+                {
+                    //持有的武器不是一个武器
+                }
+            }
+        }
     }
 
     public class MyApi

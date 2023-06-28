@@ -35,7 +35,6 @@ public class DeathInFormation
             {
                 if (Player.GetPlayers().Any(x => x.Role == RoleTypeId.Spectator))
                 {
-                    Log.Info("awa");
                     string teamfuhuo = "";
                     if (Respawn.NextKnownTeam == SpawnableTeamType.NineTailedFox)
                     {

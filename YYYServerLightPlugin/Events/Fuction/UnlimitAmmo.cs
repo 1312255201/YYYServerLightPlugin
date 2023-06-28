@@ -12,13 +12,16 @@ namespace YYYServerLightPlugin.Events.Fuction
         [PluginEvent(ServerEventType.PlayerReloadWeapon)]
         void PlayerChangeRole(Player player, InventorySystem.Items.Firearms.Firearm firearm)
         {
-            try
+            if (firearm.ItemTypeId != ItemType.ParticleDisruptor)
             {
-                player.SetAmmo(firearm.AmmoType, firearm.AmmoManagerModule.MaxAmmo);
-            }
-            catch
-            {
+                try
+                {
+                    player.SetAmmo(firearm.AmmoType, firearm.AmmoManagerModule.MaxAmmo);
+                }
+                catch
+                {
                 
+                }
             }
         }
     }

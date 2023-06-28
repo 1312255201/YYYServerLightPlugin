@@ -372,7 +372,6 @@ public class ShowTeamInFormation
                     }
                     catch 
                     {
-                        Log.Info("awa");
                     }
             }
             AddChatHint(player,"<size=23><align=right>" + "<pos=35%>队伍聊天 指令.c [内容]\n" + string.Join("\n", list) + "</size>" , chatid);
@@ -381,6 +380,7 @@ public class ShowTeamInFormation
     }
     public static void AddChatHint(Player player,string thing,int id)
     {
+        
         foreach (awa awa2 in awas)
         {
             var player1 = Player.GetPlayers().FirstOrDefault(b => b.PlayerId == awa2.playeridawa);

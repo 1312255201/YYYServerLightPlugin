@@ -293,10 +293,10 @@ public class ShowTeamInFormation
                     chatList4.Add("<pos=35%>[" + keyValuePairs[player.Role] + "]" + player.Nickname + ":" + txt);
                 }
                 else
-                    {
-                        chatList4.RemoveAt(0);
-                        chatList4.Add("<pos=35%>[" + keyValuePairs[player.Role] + "]" + player.Nickname + ":" + txt);
-                    }
+                {
+                    chatList4.RemoveAt(0);
+                    chatList4.Add("<pos=35%>[" + keyValuePairs[player.Role] + "]" + player.Nickname + ":" + txt);
+                }
                 for (int i = 0; i < chatList4.Count; i++)
                 {
                     list.Add(chatList4[i]);

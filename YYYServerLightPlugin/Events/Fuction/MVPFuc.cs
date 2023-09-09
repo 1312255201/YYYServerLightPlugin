@@ -105,33 +105,36 @@ public class MVPFuc
         }
     }
     [PluginEvent(PluginAPI.Enums.ServerEventType.PlayerDamage)]
-    void PlayerDamage(Player target, Player attacker, PlayerStatsSystem.DamageHandlerBase damageHandler)
+    void PlayerDamage(Player attacker, Player target, PlayerStatsSystem.DamageHandlerBase damageHandler)
     {
         int tmpdamage = 0;
         if(attacker != null)
         {
-            if (damageHandler is StandardDamageHandler standardDamageHandler)
+            if(target != null)
             {
-                if (standardDamageHandler.Damage == -1)
+                if (damageHandler is StandardDamageHandler standardDamageHandler)
                 {
-                    tmpdamage = (int)target.Health;
-                }
-                else if (standardDamageHandler.Damage >= target.Health)
-                {
-                    tmpdamage = (int)target.Health;
-                }
-                else
-                {
-                    tmpdamage = (int)standardDamageHandler.Damage;
-                }
+                    if (standardDamageHandler.Damage == -1)
+                    {
+                        tmpdamage = (int)target.Health;
+                    }
+                    else if (standardDamageHandler.Damage >= target.Health)
+                    {
+                        tmpdamage = (int)target.Health;
+                    }
+                    else
+                    {
+                        tmpdamage = (int)standardDamageHandler.Damage;
+                    }
 
-                if (TotalDamege.ContainsKey(attacker.PlayerId))
-                {
-                    TotalDamege[attacker.PlayerId] += tmpdamage;
-                }
-                else
-                {
-                    TotalDamege.Add(attacker.PlayerId, tmpdamage);
+                    if (TotalDamege.ContainsKey(attacker.PlayerId))
+                    {
+                        TotalDamege[attacker.PlayerId] += tmpdamage;
+                    }
+                    else
+                    {
+                        TotalDamege.Add(attacker.PlayerId, tmpdamage);
+                    }
                 }
             }
         }

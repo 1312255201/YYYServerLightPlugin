@@ -39,6 +39,5 @@ public class AdminChat: ICommand
         }
         response = "未知错误";
         return false;
-
     }
 }

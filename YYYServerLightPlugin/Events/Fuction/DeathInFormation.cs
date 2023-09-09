@@ -6,6 +6,7 @@ using PlayerRoles;
 using PluginAPI.Core;
 using PluginAPI.Core.Attributes;
 using PluginAPI.Enums;
+using PluginAPI.Events;
 using Respawning;
 
 namespace YYYServerLightPlugin.Events.Fuction;
@@ -24,6 +25,10 @@ public class DeathInFormation
     void RoundRestart()
     {
 
+    }
+    [PluginEvent]
+    public void OnTeamRespawn(TeamRespawnEvent ev)
+    {
     }
     private IEnumerator<float> Respawntime()
     {
